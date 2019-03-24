@@ -57,9 +57,8 @@ def PutCommand(name, text, database):
     then the string describes the error.
   """
   # Store the value in the database.
-
-  print("%s = %s" % (name,text))
   database.StoreValue(name,text)
+  print("%s = %s" % (name,text))
 
 
 
@@ -78,6 +77,7 @@ def GetCommand(name, database):
   ##########################################
   #TODO: Implement GET function
   ##########################################
+  database.GetValue(name)
 
 
 def DumpCommand(database):
