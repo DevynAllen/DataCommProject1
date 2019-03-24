@@ -1,4 +1,5 @@
-"""A proxy server that forwards requests from one port to another server.
+"""
+A proxy server that forwards requests from one port to another server.
 
 To run this using Python 2.7:
 
@@ -41,6 +42,7 @@ def ForwardCommandToServer(command, server_addr, server_port):
     A single line string response with no newlines.
   """
 
+  
   ###################################################
   #TODO: Implement Function: WiP
   ###################################################
@@ -82,8 +84,6 @@ def ProxyClientCommand(sock, server_addr, server_port, cache):
   ###########################################
   #TODO: Implement ProxyClientCommand
   ###########################################
-
-
 
 
 def main():

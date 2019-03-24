@@ -8,7 +8,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-# THe Python socket API is based closely on the Berkeley sockets API which
+# The Python socket API is based closely on the Berkeley sockets API which
 # was originally written for the C programming language.
 #
 # https://en.wikipedia.org/wiki/Berkeley_sockets
@@ -27,64 +27,25 @@ import time
 # will be shorter than this.
 COMMAND_BUFFER_SIZE = 256
 
-
 def CreateServerSocket(port):
-  """Creates a socket that listens on a specified port.
+    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serverSocket.bind(('localhost', port)) #bind host address and port together
+    serverSocket.listen(1) #how many clients server can listen to at once
+    print("Waiting for client to connect...")
+    return serverSocket
 
-  Args:
-    port: int from 0 to 2^16. Low numbered ports have defined purposes. Almost
-        all predefined ports represent insecure protocols that have died out.
-  Returns:
-    An socket that implements TCP/IP.
-  """
+def ConnectClientToServer(server_sock, port):
+    clientSocket, address = server_sock.accept() #accept new connection
+    return clientSocket, (address, port)
 
-    #############################################
-    #TODO: Implement CreateServerSocket Function
-    #############################################
+def CreateClientSocket():
+    return socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-def ConnectClientToServer(server_sock):
-    # Wait until a client connects and then get a socket that connects to the
-    # client.
-    printf("testing")
-
-    #############################################
-    #TODO: Implement CreateClientSocket Function
-    #############################################
-
-
-
-
-def CreateClientSocket(server_addr, port):
-  """Creates a socket that connects to a port on a server."""
-
-    #############################################
-    #TODO: Implement CreateClientSocket Function
-    #############################################
-
-
-def ReadCommand(sock):
-  """Read a single command from a socket. The command must end in newline."""
-
-    #############################################
-    #TODO: Implement ReadCommand Function
-    #############################################
-
-
+def ReadCommand(clientSocket):
+    data = clientSocket.recv(1024)
+    return data
 
 def ParseCommand(command):
-  """Parses a command and returns the command name, first arg, and remainder.
-
-  All commands are of the form:
-      COMMAND arg1 remaining text is called remainder
-  Spaces separate the sections, but the remainder can contain additional spaces.
-  The returned values are strings if the values are present or `None`. Trailing
-  whitespace is removed.
-
-  Args:
-    command: string command.
-  Returns:
-    command, arg1, remainder. Each of these can be None.
-  """
   args = command.strip().split(' ')
   command = None
   if args:
@@ -106,12 +67,8 @@ class KeyValueStore(object):
   """
 
   def __init__(self):
-    printf("testing")
-
-    ###########################################
     #TODO: Implement __init__ Function
-    ###########################################
-
+    self._dictionary = {}
 
   def GetValue(self, key, max_age_in_sec=None):
     """Gets a cached value or `None`.
@@ -125,31 +82,19 @@ class KeyValueStore(object):
     Returns:
       None or the value.
     """
+    if key not in _dictionary:
+        return None
+    elif self._dictionary[key] > max_age_in_sec:
+        return None
+    else:
+        return self._dictionary[key]
     # Check if we've ever put something in the cache.
 
-    ###########################################
-    #TODO: Implement GetValue Function
-    ###########################################
-
-
-
   def StoreValue(self, key, value):
-    """Stores a value under a specific key.
-
-    Args:
-      key: string. The name of the value to store.
-      value: string. A value to store.
-    """
-
-    ###########################################
-    #TODO: Implement StoreValue Function
-    ###########################################
-
-
+    #Stores a value under a specific key.
+    self._dictionary[key] = value
+    print("stored %s with value of %s" % (key, value))
 
   def Keys(self):
-    """Returns a list of all keys in the datastore."""
-
-    ###########################################
-    #TODO: Implement Keys Function
-    ###########################################
+      for value in self._dictionary:
+          print(self._dictionary[key])

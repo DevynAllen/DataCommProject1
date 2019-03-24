@@ -57,9 +57,10 @@ def PutCommand(name, text, database):
     then the string describes the error.
   """
   # Store the value in the database.
-  ##########################################
-  #TODO: Implement PUT function
-  ##########################################
+
+  print("%s = %s" % (name,text))
+  database.StoreValue(name,text)
+
 
 
 def GetCommand(name, database):
@@ -94,8 +95,8 @@ def DumpCommand(database):
   ##########################################
   #TODO: Implement DUMP function
   ##########################################
-  
- 
+
+
 
 
 def SendText(sock, text):
@@ -110,11 +111,12 @@ def main():
   # have permission to listen on the port, try a higher numbered port.
   server_sock = library.CreateServerSocket(LISTENING_PORT)
 
+
   # Handle commands indefinitely. Use ^C to exit the program.
   while True:
-    # Wait until a client connects and then get a socket that connects to the
-    # client.
-    client_sock, (address, port) = library.ConnectClientToServer(server_sock)
+    # Wait until a client connects and then get a socket that connects to the client
+    # client_sock = library.CreateClientSocket()
+    client_sock, (address, port) = library.ConnectClientToServer(server_sock, LISTENING_PORT)
     print('Received connection from %s:%d' % (address, port))
 
     # Read a command.
@@ -123,22 +125,16 @@ def main():
 
     # Execute the command based on the first word in the command line.
     if command == 'PUT':
-      result = PutCommand(name, text, database)
+        result = PutCommand(name, text, database)
     elif command == 'GET':
-      result = GetCommand(name, database)
+        result = GetCommand(name, database)
     elif command == 'DUMP':
-      result = DumpCommand(database)
+        result = DumpCommand(database)
     else:
       SendText(client_sock, 'Unknown command %s' % command)
 
     SendText(client_sock, result)
 
-    # We're done with the client, so clean up the socket.
-
-    #################################
-    #TODO: Close socket's connection
-    #################################
-    
-
+    client_sock.close()
 
 main()
