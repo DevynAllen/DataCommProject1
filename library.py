@@ -82,7 +82,7 @@ class KeyValueStore(object):
     Returns:
       None or the value.
     """
-    if key not in _dictionary:
+    if not self._dictionary[key]:
         return None
     elif self._dictionary[key] > max_age_in_sec:
         return None

@@ -42,7 +42,10 @@ def ForwardCommandToServer(command, server_addr, server_port):
     A single line string response with no newlines.
   """
 
-  
+  serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  serverSocket.send(command)
+
+
   ###################################################
   #TODO: Implement Function: WiP
   ###################################################

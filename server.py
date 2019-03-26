@@ -58,7 +58,7 @@ def PutCommand(name, text, database):
   """
   # Store the value in the database.
   database.StoreValue(name,text)
-  print("%s = %s" % (name,text))
+  print("[%s] stored with the value of [%s]" % (name,text))
 
 
 
@@ -77,7 +77,8 @@ def GetCommand(name, database):
   ##########################################
   #TODO: Implement GET function
   ##########################################
-  database.GetValue(name)
+  value = database.GetValue(name)
+  print("%s", value)
 
 
 def DumpCommand(database):
