@@ -43,67 +43,22 @@ LISTENING_PORT = 7777
 
 
 def PutCommand(name, text, database):
-  """Handle the PUT command for a server.
-
-  PUT's first argument is the name of the key to store the value under.
-  All remaining arguments are stitched together and used as the value.
-
-  Args:
-    name: The name of the value to store.
-    text: The value to store.
-    database: A KeyValueStore containing key/value pairs.
-  Returns:
-    A human readable string describing the result. If there is an error,
-    then the string describes the error.
-  """
-  # Store the value in the database.
   database.StoreValue(name,text)
-  print("[%s] stored with the value of [%s]" % (name,text))
-
-
+  return ("%s = %s" % (name,text))
 
 def GetCommand(name, database):
-  """Handle the GET command for a server.
-
-  GET takes a single argument: the name of the key to look up.
-
-  Args:
-    name: The name of the value to retrieve.
-    database: A KeyValueStore containing key/value pairs.
-  Returns:
-    A human readable string describing the result. If there is an error,
-    then the string describes the error.
-  """
-  ##########################################
-  #TODO: Implement GET function
-  ##########################################
   value = database.GetValue(name)
-  print("%s", value)
-
+  return value
 
 def DumpCommand(database):
-  """Creates a function to handle the DUMP command for a server.
-
-  DUMP takes no arguments. It always returns a CSV containing all keys.
-
-  Args:
-    database: A KeyValueStore containing key/value pairs.
-  Returns:
-    A human readable string describing the result. If there is an error,
-    then the string describes the error.
-  """
-
-  ##########################################
-  #TODO: Implement DUMP function
-  ##########################################
-
-
-
+  if database.Keys():
+      return ','.join(database.Keys())
+  else:
+    return "Key Value Storage is empty"
 
 def SendText(sock, text):
   """Sends the result over the socket along with a newline."""
   sock.send('%s\n' % text)
-
 
 def main():
   # Store all key/value pairs in here.
@@ -111,7 +66,6 @@ def main():
   # The server socket that will listen on the specified port. If you don't
   # have permission to listen on the port, try a higher numbered port.
   server_sock = library.CreateServerSocket(LISTENING_PORT)
-
 
   # Handle commands indefinitely. Use ^C to exit the program.
   while True:
