@@ -17,6 +17,7 @@ from __future__ import print_function
 
 import library
 import socket
+import sys
 
 # Where to find the server. This assumes it's running on the same machine
 # as the proxy, but on a different port.
@@ -42,12 +43,12 @@ def ForwardCommandToServer(command, server_addr, server_port):
 def CheckCachedResponse(command_line, cache, server_addr, server_port):
   cmd, name, text = library.ParseCommand(command_line)
   if cmd == "GET":
-      if cache.GetValue(name, MAX_CACHE_AGE_SEC):
-          return cache.GetValue(name, MAX_CACHE_AGE_SEC)
-      else:
-          get = ForwardCommandToServer(command_line, server_addr, server_port)
-          cache.StoreValue(name, get)
-          return get
+      if cache.GetValue(name, MAX_CACHE_AGE_SEC): #if in cache
+          return cache.GetValue(name, MAX_CACHE_AGE_SEC) #get the value at key
+      else: #if not in cache
+          get = ForwardCommandToServer(command_line, server_addr, server_port) #forward cmd to server, store in database
+          cache.StoreValue(name, get) #store in cache
+          return get #return GET
 
   elif cmd == "PUT":
       if cache.GetValue(name, MAX_CACHE_AGE_SEC):
@@ -71,14 +72,15 @@ def main():
   while True:
     # Wait until a client connects and then get a socket that connects to the
     # client.
-    client_sock, (address, port) = library.ConnectClientToServer(server_sock, SERVER_PORT)
-    print('Received connection from %s:%d' % (address, port))
-    ProxyClientCommand(client_sock, SERVER_ADDRESS, SERVER_PORT,
-                       cache)
+    try:
+        client_sock, (address, port) = library.ConnectClientToServer(server_sock, SERVER_PORT)
+        print('Received connection from %s:%d' % (address, port))
+        ProxyClientCommand(client_sock, SERVER_ADDRESS, SERVER_PORT,
+                           cache)
+    except KeyboardInterrupt:
+        print("\nUser closed proxy server")
+        sys.exit(0)
 
-  #################################
-  #TODO: Close socket's connection
-  #################################
     client_sock.close()
 
 

@@ -39,9 +39,13 @@ def ConnectClientToServer(server_sock, port):
     return clientSocket, (address, port)
 
 def CreateClientSocket(server_addr, port):
-    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientSocket.connect((server_addr, port))
-    return clientSocket
+    try:
+        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        clientSocket.connect((server_addr, port))
+        return clientSocket
+    except Exception as err:
+        print(err)
+        return err
 
 def ReadCommand(clientSocket):
     data = clientSocket.recv(COMMAND_BUFFER_SIZE)

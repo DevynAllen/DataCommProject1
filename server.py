@@ -36,7 +36,7 @@ from __future__ import print_function
 # A few commands are used by both the server and the proxy server. Those
 # functions are in library.py.
 import library
-
+import sys
 
 # The port that we accept connections on. (A.k.a. "listen" on.)
 LISTENING_PORT = 7777
@@ -71,25 +71,30 @@ def main():
   while True:
     # Wait until a client connects and then get a socket that connects to the client
     # client_sock = library.CreateClientSocket()
-    client_sock, (address, port) = library.ConnectClientToServer(server_sock, LISTENING_PORT)
-    print('Received connection from %s:%d' % (address, port))
+    try:
+        client_sock, (address, port) = library.ConnectClientToServer(server_sock, LISTENING_PORT)
+        print('Received connection from %s:%d' % (address, port))
 
-    # Read a command.
-    command_line = library.ReadCommand(client_sock)
-    command, name, text = library.ParseCommand(command_line)
+        # Read a command.
+        command_line = library.ReadCommand(client_sock)
+        command, name, text = library.ParseCommand(command_line)
 
-    # Execute the command based on the first word in the command line.
-    if command == 'PUT':
-        result = PutCommand(name, text, database)
-    elif command == 'GET':
-        result = GetCommand(name, database)
-    elif command == 'DUMP':
-        result = DumpCommand(database)
-    else:
-      SendText(client_sock, 'Unknown command %s' % command)
+        # Execute the command based on the first word in the command line.
+        if command == 'PUT':
+            result = PutCommand(name, text, database)
+        elif command == 'GET':
+            result = GetCommand(name, database)
+        elif command == 'DUMP':
+            result = DumpCommand(database)
+        else:
+          SendText(client_sock, 'Unknown command %s' % command)
+
+    except KeyboardInterrupt:
+            print("\nUser closed server")
+            sys.exit(0)
 
     SendText(client_sock, result)
-
     client_sock.close()
+
 
 main()
